@@ -1,0 +1,158 @@
+local physics = require( "physics" )
+		display.setStatusBar(display.HiddenStatusBar)
+
+		g = 30
+
+		physics.start()
+		physics.setDrawMode('normal')
+		physics.setGravity(0, g)
+
+		--Crate Respawn and Score
+		boing = 0.5
+		spawnTime = 5000
+		local spawnTable = {}
+		local crateTimer
+
+		local function addCrate()
+
+			startX = math.random(display.contentWidth * 0.1, display.contentWidth * 0.9)
+			--Crate
+			crate = display.newImage("crate.png", startX, -100)
+			local randomSize = math.random(50,80)
+			crate.width = randomSize
+			crate.height = randomSize
+			crate.type = "crate"
+			physics.addBody( crate, "dynamic", {bounce = boing } )
+			--Collision
+			crate.collision = function(self, event)
+				if (event.phase == "began" and event.other.type == "scorer") then
+					display.remove(self)
+					spawnTable[self] = nil
+					score = score + 1
+					scoreText.text = score
+				end
+				--Game Over
+				if (event.phase == "began" and event.other.type == "left" or event.other.type == "right" or event.other.type == "bottom") then
+					display.remove(self)
+					spawnTable[self] = nil
+				end
+				return true
+			end
+			sceneGroup:insert( crate )
+			crate:addEventListener( "collision", crate)
+		end 
+
+		addCrate()
+		timer.performWithDelay( 5000, addCrate, 0)
+
+		--local function sdisplay()
+
+			local background = display.newImage("bg.png")
+			background.x = 360; background.y = 640
+			background.width = 740; background.height = 1600
+
+			--board
+			local board = display.newImage("board.png")
+			board.height = 25; board.width = 100;
+			board.x = 288; board.y = 500;
+
+			physics.addBody(board, "static",{density = 1, bounce = 0.5, friction = 1})
+
+			--pipe
+			local pipey = 1200
+			pipex = display.contentWidth * 0.5;
+			local pipeWidth = 300
+			local sideSpace = (pipeWidth * 0.5) - 29
+			local pipeHeight = 290
+
+			--borders of the pipe
+			local side = display.newImage("button.png")
+			side.height = pipeHeight; side.width = 3;
+			side.x = pipex - sideSpace; side.y = pipey;
+			physics.addBody(side, "static",{density = 1, friction = 1})
+
+			local side1 = display.newImage("button.png")
+			side1.height = pipeHeight; side1.width = 3;
+			side1.x = pipex + sideSpace; side1.y = pipey;
+			physics.addBody(side1, "static",{density = 1, friction = 1})
+
+			local side2 = display.newImage("button.png")
+			side2.height = 75; side2.width = 10
+			side2.x = pipex + sideSpace + 22; side2.y = 1095
+			physics.addBody(side2, "static",{density = 1, friction = 1})
+
+			local side3 = display.newImage("button.png")
+			side3.height = 75; side3.width = 10
+			side3.x = pipex - sideSpace - 22; side3.y = 1095
+			physics.addBody(side3, "static",{density = 1, friction = 1})
+
+			--Game Borders
+			local left = display.newImage("button.png")
+			left.height = 1280; left.width = 10
+			left.x = -80; left.y = 640
+			physics.addBody(left, "static",{density = 1, friction = 1})
+			left.type = "left"
+
+			local right = display.newImage("button.png")
+			right.height = 1280; right.width = 10
+			right.x = 800; right.y = 640
+			physics.addBody(right, "static",{density = 1, friction = 1})
+			right.type = "right"
+
+			local bottom = display.newImage("button.png")
+			bottom.height = 10; bottom.width = 880
+			bottom.x = 360 bottom.y = 1400
+			physics.addBody(bottom, "static",{density = 1, friction = 1})
+			bottom.type = "bottom"
+
+			--Scorer and pipe
+			local scorer = display.newImage("button.png")
+			scorer.height = 10; scorer.width = 245
+			scorer.x = pipex; scorer.y = 1280
+			physics.addBody(scorer, "static",{friction = 100})
+			scorer.type = "scorer"
+
+			local pipe = display.newImage("pipe.png")
+			pipe.height = pipeHeight; pipe.width = pipeWidth;
+			pipe.x = pipex; pipe.y = pipey;
+
+			score = 0
+			scoreText = display.newText(score, 100, 100, 100, 100)
+
+			sceneGroup:insert( board )
+			sceneGroup:insert( background )
+			sceneGroup:insert( side )
+			sceneGroup:insert( side1 )
+			sceneGroup:insert( side2 )
+			sceneGroup:insert( side3 )
+			sceneGroup:insert( left )
+			sceneGroup:insert( right )
+			sceneGroup:insert( bottom )
+			sceneGroup:insert( pipe )
+			sceneGroup:insert( scorer)
+			sceneGroup:insert( scoreText )
+		--end
+
+		--sdisplay()
+
+		local function follboard(event)
+			board.x,board.y = event.x, event.y
+		end
+
+		background:addEventListener('touch', follboard)
+
+		pipeTable = {}
+
+		local function addPipe()
+			newPipe = display.newImage("pipe.png")
+			newPipe.width = 300; newPipe.height = 290
+			newPipe.x = display.contentWidth * 0.5
+			newPipe.y = 1200
+			newPipe.remove = function(self)
+				display.remove(self)
+				pipeTable[self] = nil
+			end
+		end 
+
+		addPipe()
+		timer.performWithDelay(1000, addPipe, 0)

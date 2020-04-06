@@ -1,0 +1,77 @@
+--
+-- For more information on build.settings, see the Project Build Settings guide at:
+-- https://docs.coronalabs.com/guide/distribution/buildSettings
+--
+
+settings =
+{
+	orientation =
+	{
+		-- Supported values for orientation:
+		-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
+		default = "portrait",
+		supported = { "portrait", },
+	},
+
+	--
+	-- Android section
+	--
+	android =
+	{
+		usesPermissions =
+		{
+
+		},
+
+		applicationChildElements =
+        {
+            [[
+                <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
+                    android:value="ca-app-pub-5761411745009226~8584265513"/>
+            ]],
+        },
+	},
+
+	--
+	-- iOS section
+	--
+	iphone =
+	{
+		xcassets = "Images.xcassets",
+		plist =
+		{
+			UILaunchStoryboardName = "LaunchScreen",
+		},
+	},
+
+	--
+	-- Plugins section
+	--
+	plugins =
+	{
+		-- Base
+        ['plugin.appodeal.base'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.GoogleAdMob'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.StartApp'] = { publisherId = 'com.coronalabs' },
+ 
+        -- Banner
+        ['plugin.appodeal.AppLovin'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.FacebookAudience'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.Flurry'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.InMobi'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.MyTarget'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.Yandex'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.AmazonAds'] = { publisherId = 'com.coronalabs' },
+        ['plugin.appodeal.TwitterMoPub'] = { publisherId = 'com.coronalabs' },
+	},
+
+	--
+	-- Project section
+	--
+	excludeFiles =
+	{
+		-- Exclude unnecessary files for each platform
+		all = { "Icon.png", "Icon-*dpi.png", "Images.xcassets", },
+		android = { "LaunchScreen.storyboardc", },
+	},
+}
